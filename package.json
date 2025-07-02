@@ -1,0 +1,53 @@
+{
+  "name": "@zwongroup/il-gaemi",
+  "version": "0.1.0",
+  "description": "Temporal 기반 Typescript 날짜/시간 유틸리티 패키지",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "keywords": [
+    "temporal",
+    "date",
+    "time",
+    "timezone",
+    "utility",
+    "korean",
+    "business-days"
+  ],
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "tsup": "^8.0.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.5.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zwoninstitute/il-gaemi.git"
+  },
+  "author": "ZwonGroup",
+  "license": "MIT"
+}
