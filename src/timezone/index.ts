@@ -35,6 +35,158 @@ export function getNow(): ZonedDateTime {
 }
 
 /**
+ * Creates a date in the default timezone (Asia/Seoul).
+ *
+ * @param year - The year
+ * @param month - The month (1-12)
+ * @param day - The day (1-31)
+ * @returns A ZonedDateTime object in the default timezone
+ *
+ * @example
+ * ```typescript
+ * const date = getDate(2024, 1, 15);
+ * console.log(date.toString()); // "2024-01-15T00:00:00+09:00[Asia/Seoul]"
+ * ```
+ */
+export function getDate(year: number, month: number, day: number): ZonedDateTime {
+  return Temporal.PlainDate.from({ year, month, day }).toZonedDateTime(DEFAULT_TIMEZONE);
+}
+
+/**
+ * Creates a date and time in the default timezone (Asia/Seoul).
+ *
+ * @param year - The year
+ * @param month - The month (1-12)
+ * @param day - The day (1-31)
+ * @param hour - The hour (0-23)
+ * @param minute - The minute (0-59)
+ * @param second - The second (0-59, optional)
+ * @param millisecond - The millisecond (0-999, optional)
+ * @param microsecond - The microsecond (0-999, optional)
+ * @param nanosecond - The nanosecond (0-999, optional)
+ * @returns A ZonedDateTime object in the default timezone
+ *
+ * @example
+ * ```typescript
+ * const dateTime = getDateTime(2024, 1, 15, 14, 30, 45, 123, 456, 789);
+ * console.log(dateTime.toString()); // "2024-01-15T14:30:45.123456789+09:00[Asia/Seoul]"
+ * ```
+ */
+export function getDateTime(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  second?: number,
+  millisecond?: number,
+  microsecond?: number,
+  nanosecond?: number,
+): ZonedDateTime {
+  return Temporal.PlainDateTime.from({
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+    millisecond,
+    microsecond,
+    nanosecond,
+  }).toZonedDateTime(DEFAULT_TIMEZONE);
+}
+
+/**
+ * Creates a date and time in UTC timezone.
+ *
+ * @param year - The year
+ * @param month - The month (1-12)
+ * @param day - The day (1-31)
+ * @param hour - The hour (0-23)
+ * @param minute - The minute (0-59)
+ * @param second - The second (0-59, optional)
+ * @param millisecond - The millisecond (0-999, optional)
+ * @param microsecond - The microsecond (0-999, optional)
+ * @param nanosecond - The nanosecond (0-999, optional)
+ * @returns A ZonedDateTime object in UTC timezone
+ *
+ * @example
+ * ```typescript
+ * const utcDateTime = getDateTimeUTC(2024, 1, 15, 14, 30, 45);
+ * console.log(utcDateTime.toString()); // "2024-01-15T14:30:45+00:00[UTC]"
+ * ```
+ */
+export function getDateTimeUTC(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  second?: number,
+  millisecond?: number,
+  microsecond?: number,
+  nanosecond?: number,
+): ZonedDateTime {
+  return Temporal.PlainDateTime.from({
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+    millisecond,
+    microsecond,
+    nanosecond,
+  }).toZonedDateTime("UTC");
+}
+
+/**
+ * Creates a date in UTC timezone.
+ *
+ * @param year - The year
+ * @param month - The month (1-12)
+ * @param day - The day (1-31)
+ * @returns A ZonedDateTime object in UTC timezone
+ *
+ * @example
+ * ```typescript
+ * const utcDate = getDateUTC(2024, 1, 15);
+ * console.log(utcDate.toString()); // "2024-01-15T00:00:00+00:00[UTC]"
+ * ```
+ */
+export function getDateUTC(year: number, month: number, day: number): ZonedDateTime {
+  return Temporal.PlainDate.from({ year, month, day }).toZonedDateTime("UTC");
+}
+
+/**
+ * Creates a PlainTime object with time information.
+ *
+ * @param hour - The hour (0-23)
+ * @param minute - The minute (0-59)
+ * @param second - The second (0-59, optional)
+ * @param millisecond - The millisecond (0-999, optional)
+ * @param microsecond - The microsecond (0-999, optional)
+ * @param nanosecond - The nanosecond (0-999, optional)
+ * @returns A PlainTime object
+ *
+ * @example
+ * ```typescript
+ * const time = getTime(14, 30, 45, 123, 456, 789);
+ * console.log(time.toString()); // "14:30:45.123456789"
+ * ```
+ */
+export function getTime(
+  hour: number,
+  minute: number,
+  second?: number,
+  millisecond?: number,
+  microsecond?: number,
+  nanosecond?: number,
+): Temporal.PlainTime {
+  return Temporal.PlainTime.from({ hour, minute, second, millisecond, microsecond, nanosecond });
+}
+
+/**
  * Returns the current date and time in UTC timezone.
  *
  * This function provides the current moment in Coordinated Universal Time (UTC),

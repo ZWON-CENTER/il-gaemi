@@ -71,6 +71,11 @@ export {
   toUTC,
   fromUTC,
   getTimeZoneOffset,
+  getDate,
+  getDateUTC,
+  getDateTime,
+  getDateTimeUTC,
+  getTime,
 } from "./timezone";
 
 // Formatting functions - Convert dates to various string representations
