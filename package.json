@@ -1,6 +1,6 @@
 {
   "name": "@zwoninstitute/il-gaemi",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Temporal 기반 Typescript 날짜/시간 유틸리티 패키지",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
