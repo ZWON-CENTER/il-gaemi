@@ -3,33 +3,82 @@ import type { ZonedDateTime, PlainDate, PlainDateTime } from "../types";
 import { DEFAULT_TIMEZONE } from "../timezone";
 
 /**
+ * 📚 **DATABASE STORAGE RECOMMENDATIONS**
+ *
+ * When storing Temporal data in databases, consider these patterns:
+ *
+ * **BEST PRACTICE: Two-field approach for ZonedDateTime**
+ * ```sql
+ * CREATE TABLE events (
+ *   id SERIAL PRIMARY KEY,
+ *   event_time_utc TIMESTAMP NOT NULL,  -- Always UTC
+ *   event_timezone VARCHAR(50) NOT NULL  -- e.g., 'Asia/Seoul'
+ * );
+ * ```
+ *
+ * **GOOD: Single field with Instant/ZonedDateTime**
+ * ```typescript
+ * // Store Instant or ZonedDateTime.epochMilliseconds
+ * const instant = Temporal.Now.instant();
+ * const date = temporalToDate(instant);  // No data loss
+ * ```
+ *
+ * **CAUTION: Single field with Plain types**
+ * ```typescript
+ * // Requires timezone assumption - document this clearly!
+ * const plainDate = Temporal.PlainDate.from('2024-01-15');
+ * const date = temporalToDate(plainDate);  // Assumes Asia/Seoul
+ * ```
+ *
+ * **AVOID: Storing timezone-less data without clear rules**
+ * - Always document which timezone Plain types assume
+ * - Consider using explicit functions like plainDateToDate() instead
+ */
+
+/**
  * Converts a Temporal object to a JavaScript Date object for database storage.
  *
  * This function handles the conversion from various Temporal types to Date objects
  * that can be stored in database columns. It ensures proper timezone handling
  * and maintains the exact moment in time.
  *
+ * ⚠️ **IMPORTANT TIMEZONE CONSIDERATIONS:**
+ * - `Temporal.Instant` and `Temporal.ZonedDateTime`: No data loss (recommended)
+ * - `Temporal.PlainDateTime` and `Temporal.PlainDate`: **Timezone assumption required**
+ *   - These are interpreted in the DEFAULT_TIMEZONE (Asia/Seoul)
+ *   - This is an arbitrary decision that may not match your intent
+ *   - Consider using ZonedDateTime instead for explicit timezone handling
+ *
  * @param temporal - The Temporal object to convert
  * @returns A JavaScript Date object representing the same moment in time
  *
  * @example
  * ```typescript
+ * // ✅ Recommended: No data loss
+ * const instant = Temporal.Now.instant();
  * const zonedDateTime = getNow();
- * const date = temporalToDate(zonedDateTime);
- * console.log(date instanceof Date); // true
+ * const dateFromInstant = temporalToDate(instant);
+ * const dateFromZoned = temporalToDate(zonedDateTime);
  *
+ * // ⚠️ Timezone assumption: Interpreted as Asia/Seoul
  * const plainDate = Temporal.PlainDate.from('2024-01-15');
  * const dateFromPlain = temporalToDate(plainDate);
- * // PlainDate is interpreted as start of day in default timezone (Asia/Seoul)
+ * // This assumes 2024-01-15 00:00:00 in Asia/Seoul timezone!
  *
  * const plainDateTime = Temporal.PlainDateTime.from('2024-01-15T14:30:00');
  * const dateFromPlainDT = temporalToDate(plainDateTime);
- * // PlainDateTime is interpreted in default timezone (Asia/Seoul)
+ * // This assumes the time is in Asia/Seoul timezone!
  * ```
  */
-export function temporalToDate(temporal: ZonedDateTime | PlainDate | PlainDateTime | null | undefined): Date | null {
+export function temporalToDate(
+  temporal: Temporal.Instant | ZonedDateTime | PlainDate | PlainDateTime | null | undefined,
+): Date | null {
   if (!temporal) {
     return null;
+  }
+
+  if (temporal instanceof Temporal.Instant) {
+    return new Date(temporal.epochMilliseconds);
   }
 
   if (temporal instanceof Temporal.ZonedDateTime) {
@@ -37,7 +86,6 @@ export function temporalToDate(temporal: ZonedDateTime | PlainDate | PlainDateTi
   }
 
   if (temporal instanceof Temporal.PlainDate) {
-    // Convert PlainDate to start of day in default timezone
     const zonedDateTime = temporal.toZonedDateTime({
       timeZone: DEFAULT_TIMEZONE,
       plainTime: Temporal.PlainTime.from("00:00:00"),
@@ -46,7 +94,6 @@ export function temporalToDate(temporal: ZonedDateTime | PlainDate | PlainDateTi
   }
 
   if (temporal instanceof Temporal.PlainDateTime) {
-    // Convert PlainDateTime to ZonedDateTime in default timezone
     const zonedDateTime = temporal.toZonedDateTime(DEFAULT_TIMEZONE);
     return new Date(zonedDateTime.epochMilliseconds);
   }
@@ -151,4 +198,71 @@ export function dateToPlainDateTime(
 
   const zonedDateTime = dateToZonedDateTime(date, timeZone);
   return zonedDateTime?.toPlainDateTime() || null;
+}
+
+/**
+ * 🚨 **SAFER ALTERNATIVES TO temporalToDate** 🚨
+ *
+ * These functions require explicit timezone specification for Plain types,
+ * avoiding the implicit timezone assumption in temporalToDate.
+ */
+
+/**
+ * Safely converts PlainDate to Date with explicit timezone.
+ *
+ * @param plainDate - The PlainDate to convert
+ * @param timeZone - The timezone to interpret the date in
+ * @param timeOfDay - The time of day (defaults to start of day)
+ * @returns Date object representing the specified moment
+ *
+ * @example
+ * ```typescript
+ * const plainDate = Temporal.PlainDate.from('2024-01-15');
+ *
+ * // Explicit timezone - safer than temporalToDate
+ * const seoulDate = plainDateToDate(plainDate, 'Asia/Seoul');
+ * const nyDate = plainDateToDate(plainDate, 'America/New_York');
+ *
+ * // With specific time
+ * const noonDate = plainDateToDate(
+ *   plainDate,
+ *   'Asia/Seoul',
+ *   Temporal.PlainTime.from('12:00:00')
+ * );
+ * ```
+ */
+export function plainDateToDate(
+  plainDate: PlainDate,
+  timeZone: string,
+  timeOfDay: Temporal.PlainTime = Temporal.PlainTime.from("00:00:00"),
+): Date {
+  const zonedDateTime = plainDate.toZonedDateTime({
+    timeZone,
+    plainTime: timeOfDay,
+  });
+  return new Date(zonedDateTime.epochMilliseconds);
+}
+
+/**
+ * Safely converts PlainDateTime to Date with explicit timezone.
+ *
+ * @param plainDateTime - The PlainDateTime to convert
+ * @param timeZone - The timezone to interpret the datetime in
+ * @returns Date object representing the specified moment
+ *
+ * @example
+ * ```typescript
+ * const plainDateTime = Temporal.PlainDateTime.from('2024-01-15T14:30:00');
+ *
+ * // Explicit timezone - safer than temporalToDate
+ * const seoulDate = plainDateTimeToDate(plainDateTime, 'Asia/Seoul');
+ * const utcDate = plainDateTimeToDate(plainDateTime, 'UTC');
+ *
+ * // These could represent very different moments in time!
+ * console.log(seoulDate.getTime() !== utcDate.getTime()); // true
+ * ```
+ */
+export function plainDateTimeToDate(plainDateTime: PlainDateTime, timeZone: string): Date {
+  const zonedDateTime = plainDateTime.toZonedDateTime(timeZone);
+  return new Date(zonedDateTime.epochMilliseconds);
 }

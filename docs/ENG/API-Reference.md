@@ -597,7 +597,7 @@ Date object related conversion functions.
 
 ```typescript
 function temporalToDate(
-  temporal: ZonedDateTime | PlainDate | PlainDateTime | null | undefined
+  temporal: Temporal.Instant | ZonedDateTime | PlainDate | PlainDateTime | null | undefined
 ): Date | null
 ```
 

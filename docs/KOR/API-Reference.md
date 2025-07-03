@@ -597,7 +597,7 @@ Date객체 관련 변환 함수들입니다.
 
 ```typescript
 function temporalToDate(
-  temporal: ZonedDateTime | PlainDate | PlainDateTime | null | undefined
+  temporal: Temporal.Instant | ZonedDateTime | PlainDate | PlainDateTime | null | undefined
 ): Date | null
 ```
 
