@@ -21,21 +21,21 @@ A comprehensive TypeScript date and time utility library built on top of the mod
 
 ```bash
 # Using npm
-npm install @zwongroup/il-gaemi
+npm install @zwoninstitute/il-gaemi
 
 # Using yarn
-yarn add @zwongroup/il-gaemi
+yarn add @zwoninstitute/il-gaemi
 
 # Using bun
 
 # il-gaemi 🐜
-bun add @zwongroup/il-gaemi
+bun add @zwoninstitute/il-gaemi
 ```
 
 ## 🚀 Quick Start
 
 ```typescript
-import { isWorkday, format, getNow, getNextWorkday, formatKorean } from '@zwongroup/il-gaemi';
+import { isWorkday, format, getNow, getNextWorkday, formatKorean } from '@zwoninstitute/il-gaemi';
 
 // Check if today is a business day
 const today = getNow();

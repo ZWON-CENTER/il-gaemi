@@ -1,5 +1,5 @@
 {
-  "name": "@zwongroup/il-gaemi",
+  "name": "@zwoninstitute/il-gaemi",
   "version": "0.1.0",
   "description": "Temporal 기반 Typescript 날짜/시간 유틸리티 패키지",
   "main": "dist/index.js",
@@ -46,8 +46,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zwoninstitute/il-gaemi.git"
+    "url": "git+https://github.com/ZWON-CENTER/il-gaemi"
   },
-  "author": "ZwonGroup",
+  "author": "ZwonInstitute",
   "license": "MIT"
 }

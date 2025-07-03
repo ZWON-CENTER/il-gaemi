@@ -19,19 +19,19 @@ Temporal API 기반의 포괄적인 TypeScript 날짜/시간 유틸리티 라이
 
 ```bash
 # npm 사용
-npm install @zwongroup/il-gaemi
+npm install @zwoninstitute/il-gaemi
 
 # yarn 사용
-yarn add @zwongroup/il-gaemi
+yarn add @zwoninstitute/il-gaemi
 
 # bun 사용
-bun add @zwongroup/il-gaemi
+bun add @zwoninstitute/il-gaemi
 ```
 
 ## 🚀 빠른 시작
 
 ```typescript
-import { isWorkday, format, getNow, getNextWorkday, formatKorean } from '@zwongroup/il-gaemi';
+import { isWorkday, format, getNow, getNextWorkday, formatKorean } from '@zwoninstitute/il-gaemi';
 
 // 오늘이 영업일인지 확인
 const today = getNow();
