@@ -11,6 +11,7 @@
  * - **Timezone Management**: Convert between timezones with ease
  * - **Temporal API Integration**: Built on the modern Temporal API for precise date/time handling
  * - **Type Safety**: Full TypeScript support with comprehensive type definitions
+ * - **Transform Integration**: Transform to Date Object, ZonedDateTime, PlainDate, PlainDateTime
  *
  * ## Quick Start
  *
@@ -32,6 +33,10 @@
  * // Work with timezones
  * const utcTime = getNowUTC();
  * const koreanTime = convertToZonedDateTime(utcTime, 'Asia/Seoul');
+ *
+ * // Transform to Date Object, ZonedDateTime, PlainDate, PlainDateTime
+ * import { temporalToDate } from 'zwon-date-function';
+ *
  * ```
  *
  * ## Module Organization
@@ -41,6 +46,7 @@
  * - **Date Module**: Business day calculations and week number utilities
  * - **Format Module**: Date/time formatting with multiple output styles
  * - **Timezone Module**: Timezone conversion and management utilities
+ * - **Transform Module**: Tranform to Date Object, ZonedDateTime, PlainDate, PlainDateTime
  * - **Types Module**: TypeScript type definitions and interfaces
  *
  * @example
@@ -80,6 +86,15 @@ export {
 
 // Formatting functions - Convert dates to various string representations
 export { format, formatKorean, formatRelative } from "./format";
+
+// TypeORM integration functions and transformers
+export {
+  // Conversion functions
+  temporalToDate,
+  dateToZonedDateTime,
+  dateToPlainDate,
+  dateToPlainDateTime,
+} from "./transform";
 
 // Error classes - Custom error types for better error handling
 export {

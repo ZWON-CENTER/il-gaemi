@@ -7,6 +7,7 @@ Complete API documentation for all functions and types in the **il-gaemi** libra
 - [🗓️ Date Module](#-date-module)
 - [🎨 Format Module](#-format-module)
 - [🌏 Timezone Module](#-timezone-module)
+- [🔄 Transform Module](#-transform-module)
 - [📝 Types](#-types)
 - [⚠️ Errors](#-errors)
 
@@ -587,6 +588,138 @@ console.log(winterOffset); // -5 (EST)
 ```
 
 ---
+
+## 🔄 Transform Module
+
+Date object related conversion functions.
+
+### `temporalToDate()`
+
+```typescript
+function temporalToDate(
+  temporal: ZonedDateTime | PlainDate | PlainDateTime | null | undefined
+): Date | null
+```
+
+Converts a Temporal object to a JavaScript Date object.
+
+**Parameters**
+- `temporal`: The Temporal object to convert
+
+**Returns**
+- `Date | null`: Converted Date object (returns null if input is null)
+
+**Usage Examples**
+```typescript
+const zonedDateTime = getNow();
+const date = temporalToDate(zonedDateTime);
+console.log(date instanceof Date); // true
+
+const plainDate = Temporal.PlainDate.from('2024-01-15');
+const dateFromPlain = temporalToDate(plainDate);
+// PlainDate is converted to start of day in default timezone (Asia/Seoul)
+
+const plainDateTime = Temporal.PlainDateTime.from('2024-01-15T14:30:00');
+const dateFromPlainDT = temporalToDate(plainDateTime);
+// PlainDateTime is interpreted in default timezone (Asia/Seoul)
+```
+
+---
+
+### `dateToZonedDateTime()`
+
+```typescript
+function dateToZonedDateTime(
+  date: Date | null | undefined,
+  timeZone?: string
+): ZonedDateTime | null
+```
+
+Converts a JavaScript Date object to ZonedDateTime in the specified timezone.
+
+**Parameters**
+- `date`: The Date object to convert
+- `timeZone` (optional): Target timezone (default: "Asia/Seoul")
+
+**Returns**
+- `ZonedDateTime | null`: ZonedDateTime object in the specified timezone
+
+**Usage Examples**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const zoned = dateToZonedDateTime(date);
+console.log(zoned.timeZoneId); // "Asia/Seoul"
+console.log(zoned.hour); // 14 (5:30 UTC = 14:30 KST)
+
+// Convert to different timezone
+const nyTime = dateToZonedDateTime(date, 'America/New_York');
+console.log(nyTime.hour); // 0 (5:30 UTC = 00:30 EST)
+```
+
+---
+
+### `dateToPlainDate()`
+
+```typescript
+function dateToPlainDate(
+  date: Date | null | undefined,
+  timeZone?: string
+): PlainDate | null
+```
+
+Converts a JavaScript Date object to PlainDate.
+
+**Parameters**
+- `date`: The Date object to convert
+- `timeZone` (optional): Timezone to use for date calculation (default: "Asia/Seoul")
+
+**Returns**
+- `PlainDate | null`: Converted PlainDate object
+
+**Usage Examples**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const plainDate = dateToPlainDate(date);
+console.log(plainDate.toString()); // "2024-01-15" (Asia/Seoul basis)
+
+// Convert based on UTC
+const utcPlainDate = dateToPlainDate(date, 'UTC');
+console.log(utcPlainDate.toString()); // "2024-01-15" (UTC basis)
+```
+
+---
+
+### `dateToPlainDateTime()`
+
+```typescript
+function dateToPlainDateTime(
+  date: Date | null | undefined,
+  timeZone?: string
+): PlainDateTime | null
+```
+
+Converts a JavaScript Date object to PlainDateTime.
+
+**Parameters**
+- `date`: The Date object to convert
+- `timeZone` (optional): Timezone to use for calculation (default: "Asia/Seoul")
+
+**Returns**
+- `PlainDateTime | null`: Converted PlainDateTime object
+
+**Usage Examples**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const plainDateTime = dateToPlainDateTime(date);
+console.log(plainDateTime.toString()); // "2024-01-15T14:30:00" (Asia/Seoul basis)
+
+// Convert based on UTC
+const utcPlainDateTime = dateToPlainDateTime(date, 'UTC');
+console.log(utcPlainDateTime.toString()); // "2024-01-15T05:30:00" (UTC basis)
+```
+
+---
+
 
 ## 📝 Types
 

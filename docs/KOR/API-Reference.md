@@ -7,6 +7,7 @@
 - [🗓️ Date 모듈](#-date-모듈)
 - [🎨 Format 모듈](#-format-모듈)
 - [🌏 Timezone 모듈](#-timezone-모듈)
+- [🗄️ Transform 모듈](#-transform-모듈)
 - [📝 Types](#-types)
 - [⚠️ Errors](#-errors)
 
@@ -586,6 +587,136 @@ const winterOffset = getTimeZoneOffset('UTC', 'America/New_York', winterDate);
 console.log(winterOffset); // -5 (EST)
 ```
 
+---
+
+## 🗄️ Transform 모듈
+
+Date객체 관련 변환 함수들입니다.
+
+### `temporalToDate()`
+
+```typescript
+function temporalToDate(
+  temporal: ZonedDateTime | PlainDate | PlainDateTime | null | undefined
+): Date | null
+```
+
+Temporal 객체를 JavaScript Date 객체로 변환합니다.
+
+**매개변수**
+- `temporal`: 변환할 Temporal 객체
+
+**반환값**
+- `Date | null`: 변환된 Date 객체 (null 입력 시 null 반환)
+
+**사용 예제**
+```typescript
+const zonedDateTime = getNow();
+const date = temporalToDate(zonedDateTime);
+console.log(date instanceof Date); // true
+
+const plainDate = Temporal.PlainDate.from('2024-01-15');
+const dateFromPlain = temporalToDate(plainDate);
+// PlainDate는 기본 타임존(Asia/Seoul)의 당일 00:00:00으로 변환
+
+const plainDateTime = Temporal.PlainDateTime.from('2024-01-15T14:30:00');
+const dateFromPlainDT = temporalToDate(plainDateTime);
+// PlainDateTime은 기본 타임존(Asia/Seoul)으로 해석되어 변환
+```
+
+---
+
+### `dateToZonedDateTime()`
+
+```typescript
+function dateToZonedDateTime(
+  date: Date | null | undefined,
+  timeZone?: string
+): ZonedDateTime | null
+```
+
+JavaScript Date 객체를 지정된 타임존의 ZonedDateTime으로 변환합니다.
+
+**매개변수**
+- `date`: 변환할 Date 객체
+- `timeZone` (선택): 대상 타임존 (기본값: "Asia/Seoul")
+
+**반환값**
+- `ZonedDateTime | null`: 지정된 타임존의 ZonedDateTime 객체
+
+**사용 예제**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const zoned = dateToZonedDateTime(date);
+console.log(zoned.timeZoneId); // "Asia/Seoul"
+console.log(zoned.hour); // 14 (5:30 UTC = 14:30 KST)
+
+// 다른 타임존으로 변환
+const nyTime = dateToZonedDateTime(date, 'America/New_York');
+console.log(nyTime.hour); // 0 (5:30 UTC = 00:30 EST)
+```
+
+---
+
+### `dateToPlainDate()`
+
+```typescript
+function dateToPlainDate(
+  date: Date | null | undefined,
+  timeZone?: string
+): PlainDate | null
+```
+
+JavaScript Date 객체를 PlainDate로 변환합니다.
+
+**매개변수**
+- `date`: 변환할 Date 객체
+- `timeZone` (선택): 날짜 계산에 사용할 타임존 (기본값: "Asia/Seoul")
+
+**반환값**
+- `PlainDate | null`: 변환된 PlainDate 객체
+
+**사용 예제**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const plainDate = dateToPlainDate(date);
+console.log(plainDate.toString()); // "2024-01-15" (Asia/Seoul 기준)
+
+// UTC 기준으로 변환
+const utcPlainDate = dateToPlainDate(date, 'UTC');
+console.log(utcPlainDate.toString()); // "2024-01-15" (UTC 기준)
+```
+
+---
+
+### `dateToPlainDateTime()`
+
+```typescript
+function dateToPlainDateTime(
+  date: Date | null | undefined,
+  timeZone?: string
+): PlainDateTime | null
+```
+
+JavaScript Date 객체를 PlainDateTime으로 변환합니다.
+
+**매개변수**
+- `date`: 변환할 Date 객체
+- `timeZone` (선택): 계산에 사용할 타임존 (기본값: "Asia/Seoul")
+
+**반환값**
+- `PlainDateTime | null`: 변환된 PlainDateTime 객체
+
+**사용 예제**
+```typescript
+const date = new Date('2024-01-15T05:30:00.000Z');
+const plainDateTime = dateToPlainDateTime(date);
+console.log(plainDateTime.toString()); // "2024-01-15T14:30:00" (Asia/Seoul 기준)
+
+// UTC 기준으로 변환
+const utcPlainDateTime = dateToPlainDateTime(date, 'UTC');
+console.log(utcPlainDateTime.toString()); // "2024-01-15T05:30:00" (UTC 기준)
+```
 ---
 
 ## 📝 Types
