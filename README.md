@@ -32,6 +32,18 @@ yarn add @zwoninstitute/il-gaemi
 bun add @zwoninstitute/il-gaemi
 ```
 
+## ⚙️ Configuration
+
+You can override the default non-working days by setting the `IL_GAEMI_DAY_OFFS` environment variable with a comma-separated list of Korean weekday abbreviations (`월,화,수,목,금,토,일`). If the variable is unset, only Saturday (`"토"`) is treated as a day off.
+
+```bash
+# Treat Saturday and Sunday as non-working days
+export IL_GAEMI_DAY_OFFS="토,일"
+
+# bun example
+IL_GAEMI_DAY_OFFS="토,일" bun run dev
+```
+
 ## 📚 Documentation
 
 For comprehensive documentation, please visit our docs folder:

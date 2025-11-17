@@ -1,6 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
-import type { ZonedDateTime } from "../types";
+import type { ZonedDateTime, PlainDateTime, PlainDate } from "../types";
 import { InvalidDateError, InvalidDateFormatError } from "../errors";
+import { parseFlexibleDateString } from "../utils/dateParser";
 
 /**
  * Default timezone for the library (Korea Standard Time).
@@ -244,23 +245,22 @@ export function getNowUTC(): ZonedDateTime {
  * ```
  */
 export function convertToZonedDateTime(
-  date: ZonedDateTime | Temporal.PlainDateTime | string,
+  date: ZonedDateTime | PlainDateTime | PlainDate | string,
   timeZone: string = DEFAULT_TIMEZONE,
 ): ZonedDateTime {
-  if (typeof date === "string") {
-    if (date.includes("T")) {
-      return Temporal.Instant.from(date).toZonedDateTimeISO(timeZone);
-    }
-    const plainDate = Temporal.PlainDate.from(date);
-    const plainDateTime = plainDate.toPlainDateTime(Temporal.PlainTime.from("00:00:00"));
-    return plainDateTime.toZonedDateTime(timeZone);
+  const resolved: ZonedDateTime | PlainDateTime | PlainDate =
+    typeof date === "string" ? parseFlexibleDateString(date) : date;
+
+  if (resolved instanceof Temporal.ZonedDateTime) {
+    return resolved.withTimeZone(timeZone);
   }
 
-  if (date instanceof Temporal.PlainDateTime) {
-    return date.toZonedDateTime(timeZone);
+  if (resolved instanceof Temporal.PlainDateTime) {
+    return resolved.toZonedDateTime(timeZone);
   }
 
-  return date.withTimeZone(timeZone);
+  const plainDateTime = resolved.toPlainDateTime(Temporal.PlainTime.from("00:00:00"));
+  return plainDateTime.toZonedDateTime(timeZone);
 }
 
 /**

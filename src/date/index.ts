@@ -2,6 +2,63 @@ import { Temporal } from "@js-temporal/polyfill";
 import type { Holiday, WeekDay, PlainDate } from "../types";
 import { InvalidDateError } from "../errors";
 
+const DAY_OFF_ENV_KEY = "IL_GAEMI_DAY_OFFS";
+const KOREAN_WEEKDAY_MAP: Record<string, WeekDay> = {
+  월: 1,
+  화: 2,
+  수: 3,
+  목: 4,
+  금: 5,
+  토: 6,
+  일: 7,
+};
+const FALLBACK_DAY_OFFS: WeekDay[] = [KOREAN_WEEKDAY_MAP["토"]];
+
+const getEnv = (): Record<string, string | undefined> | null => {
+  if (typeof process === "undefined" || typeof process.env === "undefined") {
+    return null;
+  }
+  return process.env as Record<string, string | undefined>;
+};
+
+function parseDayTokens(tokens: string[]): WeekDay[] {
+  const parsed = tokens
+    .map((token) => token.replace(/요일$/u, "").trim())
+    .map((token) => (token ? KOREAN_WEEKDAY_MAP[token as keyof typeof KOREAN_WEEKDAY_MAP] : undefined))
+    .filter((value): value is WeekDay => typeof value === "number");
+
+  if (!parsed.length) {
+    return [...FALLBACK_DAY_OFFS];
+  }
+
+  return Array.from(new Set(parsed)) as WeekDay[];
+}
+
+function getConfiguredDayOffWeekdays(): WeekDay[] {
+  const env = getEnv();
+  if (!env) {
+    return [...FALLBACK_DAY_OFFS];
+  }
+
+  const raw = env[DAY_OFF_ENV_KEY];
+  if (!raw) {
+    return [...FALLBACK_DAY_OFFS];
+  }
+
+  const tokens = raw
+    .split(",")
+    .map((token) => token.trim())
+    .filter((token) => token.length > 0);
+
+  if (!tokens.length) {
+    return [...FALLBACK_DAY_OFFS];
+  }
+
+  return parseDayTokens(tokens);
+}
+
+const DEFAULT_DAY_OFF_WEEKDAYS: WeekDay[] = getConfiguredDayOffWeekdays();
+
 /**
  * Determines whether a given date is a business day (workday).
  *
@@ -34,7 +91,7 @@ import { InvalidDateError } from "../errors";
 export function isWorkday(
   date: PlainDate | string,
   holidayList: Holiday[] = [],
-  dayOffWeekdays: WeekDay[] = [6, 7],
+  dayOffWeekdays: WeekDay[] = DEFAULT_DAY_OFF_WEEKDAYS,
 ): boolean {
   const plainDate = typeof date === "string" ? Temporal.PlainDate.from(date) : date;
 
@@ -153,7 +210,7 @@ export function getWeekNum(date: PlainDate | string): { month: number; year: num
 export function getNextWorkday(
   date: PlainDate | string,
   holidayList: Holiday[] = [],
-  dayOffWeekdays: WeekDay[] = [6, 7],
+  dayOffWeekdays: WeekDay[] = DEFAULT_DAY_OFF_WEEKDAYS,
 ): PlainDate {
   let currentDate = typeof date === "string" ? Temporal.PlainDate.from(date) : date;
 
@@ -191,7 +248,7 @@ export function getNextWorkday(
 export function getPreviousWorkday(
   date: PlainDate | string,
   holidayList: Holiday[] = [],
-  dayOffWeekdays: WeekDay[] = [6, 7],
+  dayOffWeekdays: WeekDay[] = DEFAULT_DAY_OFF_WEEKDAYS,
 ): PlainDate {
   let currentDate = typeof date === "string" ? Temporal.PlainDate.from(date) : date;
 
