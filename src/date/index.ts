@@ -63,12 +63,12 @@ const DEFAULT_DAY_OFF_WEEKDAYS: WeekDay[] = getConfiguredDayOffWeekdays();
  * Determines whether a given date is a business day (workday).
  *
  * A business day is defined as a day that is:
- * - Not a weekend day (configurable, defaults to Saturday and Sunday)
+ * - Not a configured day off (defaults to Saturday)
  * - Not a holiday from the provided holiday list
  *
  * @param date - The date to check. Can be a Temporal.PlainDate object or an ISO date string (YYYY-MM-DD)
  * @param holidayList - An array of holiday objects. Each holiday can be either a one-time holiday or a recurring annual holiday
- * @param dayOffWeekdays - An array of weekday numbers representing non-working days. Uses ISO weekday numbering (1=Monday, 7=Sunday). Defaults to [6, 7] (Saturday, Sunday)
+ * @param dayOffWeekdays - ISO weekdays to treat as non-working days (1=Monday, 7=Sunday). Defaults to Saturday; IL_GAEMI_DAY_OFFS can override it.
  * @returns `true` if the date is a business day, `false` otherwise
  *
  * @example

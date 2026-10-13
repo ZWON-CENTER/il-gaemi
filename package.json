@@ -1,6 +1,6 @@
 {
   "name": "@zwoninstitute/il-gaemi",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Temporal 기반 Typescript 날짜/시간 유틸리티 패키지",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -14,9 +14,14 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
+    },
+    "./holidays": {
+      "types": "./dist/holidays/index.d.ts",
+      "import": "./dist/holidays/index.mjs",
+      "require": "./dist/holidays/index.js"
     }
   },
   "keywords": [
@@ -29,14 +34,15 @@
     "business-days"
   ],
   "dependencies": {
-    "@js-temporal/polyfill": "^0.4.4"
+    "@js-temporal/polyfill": "^0.4.4",
+    "fast-xml-parser": "5.11.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
     "tsup": "^8.0.0",
-    "vitest": "^1.0.0",
-    "@vitest/coverage-v8": "^1.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   },
   "peerDependencies": {
     "typescript": ">=4.5.0"

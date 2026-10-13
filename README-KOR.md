@@ -4,11 +4,12 @@
 <img src="ilgaemi.png" alt="il-gaemi Logo" width=200>
 </div>
 
-Temporal API 기반의 포괄적인 TypeScript 날짜/시간 유틸리티 라이브러리로, 한국 현지화와 영업일 계산에 특화되어 있습니다.
+Temporal API 기반의 TypeScript 날짜·시간 유틸리티입니다. 한국 공휴일은 서버 전용 API로 조회할 수 있고, 캐시와 갱신 정책은 호출 앱이 관리합니다.
 
 ## ✨ 주요 기능
 
-- **🏢 영업일 계산**: 주말과 공휴일을 제외한 영업일 판단 및 계산
+- **🏢 영업일 계산**: 휴무 요일과 공휴일 목록을 반영한 영업일 판정
+- **🇰🇷 한국 공휴일**: 서버 전용 /holidays 진입점으로 연도별 공식 공휴일 조회
 - **🎨 유연한 날짜 포맷팅**: 한국어 형식 포함 다양한 출력 형식 지원
 - **🌏 타임존 관리**: 한국 표준시 기본 지원으로 타임존 간 변환 용이
 - **⚡ Temporal API 통합**: 최신 Temporal API 기반의 정확하고 안정적인 날짜/시간 처리
@@ -18,15 +19,7 @@ Temporal API 기반의 포괄적인 TypeScript 날짜/시간 유틸리티 라이
 ## 📦 설치
 
 ```bash
-# npm 사용
-npm install @zwoninstitute/il-gaemi
-
-# yarn 사용
-yarn add @zwoninstitute/il-gaemi
-
-# bun 사용
-bun add @zwoninstitute/il-gaemi
-
+pnpm add @zwoninstitute/il-gaemi
 ```
 
 ## 🚀 빠른 시작
@@ -65,11 +58,7 @@ console.log(format(nextWorkday, 'date')); // 다음 영업일
 `IL_GAEMI_DAY_OFFS` 환경 변수에 쉼표로 구분한 요일(예: `토,일`)을 설정하면 기본 비근무 요일이 그 값으로 대체됩니다. 요일 표기는 한글 약어(월, 화, 수, 목, 금, 토, 일)를 사용하며, 값을 지정하지 않으면 기본적으로 `토`만 쉬는 날로 취급됩니다.
 
 ```bash
-# 예: 토요일과 일요일을 비근무일로 처리
 export IL_GAEMI_DAY_OFFS="토,일"
-
-# bun
-IL_GAEMI_DAY_OFFS="토,일" bun run dev
 ```
 
 ## 📚 문서
@@ -113,9 +102,9 @@ import type { Holiday, WeekDay, DateFormatType } from '@zwoninstitute/il-gaemi';
 
 ### 공휴일 데이터
 
-- 공휴일 목록은 사용자가 직접 관리해야 합니다
-- `recurring: true`는 매년 같은 날짜의 공휴일에 사용합니다
-- `recurring: false`는 특정 연도의 공휴일이나 대체공휴일에 사용합니다
+공휴일은 /holidays 진입점의 fetchKoreanHolidays()로 조회할 수 있습니다. Node.js 22 이상 서버에서 사용하고, data.go.kr에서 발급받은 디코딩 인증 키를 서버에서 전달하세요. 브라우저에 키를 넣지 마세요.
+
+라이브러리는 결과를 저장하거나 자동 갱신하지 않습니다. 호출 앱은 요청 연도와 fetchedAt을 보관하고 전체 조회가 성공한 뒤에만 캐시를 교체해야 합니다. 실패나 데이터 미제공을 빈 목록으로 처리하지 마세요. 임시공휴일 반영을 고려해 현재 연도의 캐시를 주기적으로 갱신하세요.
 
 ## 📄 라이센스
 
@@ -123,7 +112,7 @@ MIT
 
 ## 🤝 기여하기
 
-기여를 환영합니다! Pull Request를 자유롭게 제출해 주세요.
+기여를 환영합니다! Pull Request를 자유롭게 제출해 주세요. 저장소는 pnpm과 추적 중인 pnpm-lock.yaml로 재현 가능한 설치를 관리합니다.
 
 ## 🐛 버그 리포트
 

@@ -6,11 +6,12 @@
 <img src="ilgaemi.png" alt="il-gaemi Logo" width=200>
 </div>
 
-A comprehensive TypeScript date and time utility library built on top of the modern Temporal API, with a focus on Korean localization and business day calculations.
+A TypeScript date and time utility library built on Temporal. Korean public holidays can be fetched through a server-only API; the calling application owns caching and refresh policy.
 
 ## ✨ Features
 
-- **🏢 Business Day Calculations**: Determine workdays, skip holidays and weekends with customizable rules
+- **🏢 Business Day Calculations**: Determine workdays using configurable weekends and holiday lists
+- **🇰🇷 Korean Public Holidays**: Fetch annual data through the optional server-only /holidays entrypoint
 - **🎨 Flexible Date Formatting**: Support for various output formats including Korean style and relative time
 - **🌏 Timezone Management**: Seamless conversion between timezones with built-in Korean timezone support
 - **⚡ Temporal API Integration**: Built on the cutting-edge Temporal API for precise and reliable date/time handling
@@ -20,16 +21,7 @@ A comprehensive TypeScript date and time utility library built on top of the mod
 ## 📦 Installation
 
 ```bash
-# Using npm
-npm install @zwoninstitute/il-gaemi
-
-# Using yarn
-yarn add @zwoninstitute/il-gaemi
-
-# Using bun
-
-# il-gaemi 🐜
-bun add @zwoninstitute/il-gaemi
+pnpm add @zwoninstitute/il-gaemi
 ```
 
 ## ⚙️ Configuration
@@ -37,12 +29,14 @@ bun add @zwoninstitute/il-gaemi
 You can override the default non-working days by setting the `IL_GAEMI_DAY_OFFS` environment variable with a comma-separated list of Korean weekday abbreviations (`월,화,수,목,금,토,일`). If the variable is unset, only Saturday (`"토"`) is treated as a day off.
 
 ```bash
-# Treat Saturday and Sunday as non-working days
 export IL_GAEMI_DAY_OFFS="토,일"
-
-# bun example
-IL_GAEMI_DAY_OFFS="토,일" bun run dev
 ```
+
+## Korean Public Holidays
+
+The /holidays entrypoint fetches Korean public holidays from the Korea Astronomy and Space Science Institute API. Call it only on the server, keep the decoded data.go.kr key in server-side secret storage, and cache only complete responses in the calling application. Importing the root entrypoint does not make a network request.
+
+See the English Quick Start and API Reference in docs/ENG.
 
 ## 📚 Documentation
 
@@ -59,7 +53,7 @@ MIT
 
 ## 🤝 Contributing
 
-We welcome contributions! Please feel free to submit a Pull Request.
+We welcome contributions! Please feel free to submit a Pull Request. This repository uses pnpm and the tracked pnpm-lock.yaml for reproducible installs.
 
 ---
 

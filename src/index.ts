@@ -15,15 +15,15 @@
  * ## Quick Start
  *
  * ```typescript
- * import { isWorkday, format, getNow, getNextWorkday } from 'zwon-date-function';
+ * import { isWorkday, format, formatKorean, getNow, getNextWorkday } from '@zwoninstitute/il-gaemi';
  *
  * // Check if today is a business day
- * const today = getNow();
- * console.log(isWorkday(today)); // true/false
+ * const today = getNow().toPlainDate();
+ * console.log(isWorkday(today, [], [6, 7])); // true/false
  *
  * // Format dates in different styles
  * console.log(format(today, 'date')); // "2024-01-15"
- * console.log(format(today, 'korean')); // "2024년 1월 15일"
+ * console.log(formatKorean(today)); // "2024년 1월 15일"
  *
  * // Find the next business day
  * const nextWorkday = getNextWorkday(today);
@@ -46,13 +46,13 @@
  * @example
  * ```typescript
  * // Import specific functions
- * import { isWorkday, getWeekDay } from 'zwon-date-function';
+ * import { isWorkday, getWeekDay } from '@zwoninstitute/il-gaemi';
  *
  * // Import everything
- * import * as DateUtils from 'zwon-date-function';
+ * import * as DateUtils from '@zwoninstitute/il-gaemi';
  *
  * // Import types
- * import type { Holiday, WeekDay, DateFormatType } from 'zwon-date-function';
+ * import type { Holiday, WeekDay, DateFormatType } from '@zwoninstitute/il-gaemi';
  * ```
  */
 
